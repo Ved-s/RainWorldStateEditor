@@ -106,7 +106,7 @@ namespace RainWorldStateEdit
 
         public TreeNode CreateTreeNode() 
         {
-            
+            string nodeValue = TagPreview.TagString(this);
             if (IsArrayTag()) 
             {
                 List<TreeNode> Subs = new List<TreeNode>();
@@ -116,20 +116,20 @@ namespace RainWorldStateEdit
                     if (node is null) continue;
                     Subs.Add(node);
                 }
-                Node = new TreeNode(Value, Subs.ToArray());
+                Node = new TreeNode(nodeValue, Subs.ToArray());
                 Node.Tag = this;
                 return Node;
             }
             if (IsValueTag()) 
             {
-                Node = new TreeNode($"{Value}: {Sub[0].Value}");
+                Node = new TreeNode(nodeValue);
                 Node.Tag = this;
                 return Node;
             }
 
             if (string.IsNullOrEmpty(Value)) return null;
 
-            Node = new TreeNode(Value);
+            Node = new TreeNode(nodeValue);
             Node.Tag = this;
             return Node;
 

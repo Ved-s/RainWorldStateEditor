@@ -65,7 +65,6 @@ namespace RainWorldStateEdit
                 GC.Collect();
             }
         }
-
         public static void Show(TreeNode tagNode, Point pos) 
         {
             if (tagNode.Parent == null) return;

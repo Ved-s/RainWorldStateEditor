@@ -41,6 +41,7 @@ namespace RainWorldStateEdit
             this.Edit.Name = "Edit";
             this.Edit.Size = new System.Drawing.Size(216, 20);
             this.Edit.TabIndex = 0;
+            this.Edit.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Edit_KeyDown);
             // 
             // Ok
             // 

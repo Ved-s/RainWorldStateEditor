@@ -62,28 +62,22 @@ namespace RainWorldStateEdit
             switch (action)
             {
                 case TagAction.Edit:
-                    if (tag.IsFlagTag())
-                    {
-                        tag.Value = Edit.Text;
-                        node.Text = tag.Value;
-                        break;
-                    }
-                    tag[0].Value = Edit.Text;
-                    node.Text = $"{tag.Value}: {tag.Sub[0].Value}";
+                    if (tag.IsFlagTag()) tag.Value = Edit.Text;
+                    else tag[0].Value = Edit.Text;
+                    node.Text = TagPreview.TagString(tag);
                     break;
 
                 case TagAction.Rename:
                     tag.Value = Edit.Text;
-                    if (!tag.IsValueTag())
-                    {
-                        node.Text = tag.Value;
-                        break;
-                    }
-                    node.Text = $"{tag.Value}: {tag.Sub[0].Value}";
+                    node.Text = TagPreview.TagString(tag);
                     break;
 
             }
             Close();
+        }
+        private void Edit_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter) Ok_Click(sender, null);
         }
     }
     public enum TagAction { Rename, Edit }

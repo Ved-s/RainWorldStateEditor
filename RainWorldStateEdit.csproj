@@ -70,6 +70,7 @@
       <DependentUpon>TagEdit.cs</DependentUpon>
     </Compile>
     <Compile Include="TagMenu.cs" />
+    <Compile Include="TagPreview.cs" />
     <EmbeddedResource Include="Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
     </EmbeddedResource>

@@ -94,10 +94,12 @@ namespace RainWorldStateEdit
 
                 if (hash != null) text = hash + text;
                 File.WriteAllText(sfd.FileName, text);
-
-                
             }
+        }
 
+        private void TagTree_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            if ((e.Node.Tag as StateTag).IsValueTag()) TagEdit.Instance.Show(e.Node, TagAction.Edit);
         }
     }
 }

@@ -46,6 +46,7 @@ namespace RainWorldStateEdit
             this.TagTree.Size = new System.Drawing.Size(800, 427);
             this.TagTree.TabIndex = 0;
             this.TagTree.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.TagTree_NodeMouseClick);
+            this.TagTree.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.TagTree_NodeMouseDoubleClick);
             // 
             // Load
             // 
