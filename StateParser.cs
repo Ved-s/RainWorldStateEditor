@@ -17,7 +17,7 @@ namespace RainWorldStateEdit
             { "ws", "WINSTATE" },
         };
 
-        static readonly string[] IgnoreTagLevel = new string[] { "rg" };
+        static readonly string[] IgnoreTagLevel = new string[] { "rg", "mpd" };
 
         public StateParser(string state, string topTagValue = null)
         {

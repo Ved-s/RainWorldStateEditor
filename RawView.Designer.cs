@@ -39,6 +39,7 @@ namespace RainWorldStateEdit
             this.Raw.Multiline = true;
             this.Raw.Name = "Raw";
             this.Raw.ReadOnly = true;
+            this.Raw.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.Raw.Size = new System.Drawing.Size(356, 218);
             this.Raw.TabIndex = 0;
             // 
@@ -49,7 +50,7 @@ namespace RainWorldStateEdit
             this.ClientSize = new System.Drawing.Size(356, 218);
             this.Controls.Add(this.Raw);
             this.Name = "RawView";
-            this.Text = "Исходные данные";
+            this.Text = "Raw view";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.RawView_FormClosing);
             this.ResumeLayout(false);
             this.PerformLayout();

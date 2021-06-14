@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace RainWorldStateEdit
 {
@@ -14,6 +15,7 @@ namespace RainWorldStateEdit
             {
                 return $"{tag.Value}: {tag[0].Value}{additional}";
             }
+            if (PreviewFirstTag.Contains(tag.Value)) return $"{tag.Value}: {(tag[0].IsValueTag() ? tag[0][0].Value : tag[0].Value)}{additional}";
             return tag.Value + additional;
         }
 
@@ -26,6 +28,7 @@ namespace RainWorldStateEdit
             return null;
         }
 
+        internal static string[] PreviewFirstTag = new string[] { "MAP", "SHELTERLIST", "REGIONSTATE", "SAVE STATE" };
         static Dictionary<int, string> IDToNameMap = new Dictionary<int, string>()
         {
             {0,     "StandardGroundCreature"},

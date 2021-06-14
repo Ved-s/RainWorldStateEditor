@@ -71,7 +71,7 @@ namespace RainWorldStateEdit
 
             StateTag tag = tagNode.Tag as StateTag;
             currentNode = tagNode;
-            edit.Enabled = tag.IsValueTag();
+            edit.Enabled = tag.IsValueTag() || TagPreview.PreviewFirstTag.Contains(tag.Value);
             removeValue.Enabled = tag.IsValueTag();
             menu.Show(Program.Form.TagTree, pos);
         }

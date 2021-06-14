@@ -42,7 +42,11 @@ namespace RainWorldStateEdit
                     break;
                 case TagAction.Edit:
                     Text = $"Edit value: {tag.Value}";
-                    Edit.Text = tag[0].Value;
+                    if (TagPreview.PreviewFirstTag.Contains(tag.Value)) 
+                    {
+                        Edit.Text = tag[0].IsValueTag() ? tag[0][0].Value : tag[0].Value;
+                    }
+                    else Edit.Text = tag[0].Value;
                     break;
                     
             };
@@ -62,7 +66,14 @@ namespace RainWorldStateEdit
             switch (action)
             {
                 case TagAction.Edit:
-                    if (tag.IsFlagTag()) tag.Value = Edit.Text;
+
+                    if (TagPreview.PreviewFirstTag.Contains(tag.Value))
+                    {
+                        if (tag[0].IsValueTag())
+                            tag[0][0].Value = Edit.Text;
+                        else tag[0].Value = Edit.Text;
+                    }
+                    else if (tag.IsFlagTag()) tag.Value = Edit.Text;
                     else tag[0].Value = Edit.Text;
                     node.Text = TagPreview.TagString(tag);
                     break;

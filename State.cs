@@ -109,11 +109,12 @@ namespace RainWorldStateEdit
             string nodeValue = TagPreview.TagString(this);
             if (IsArrayTag()) 
             {
+                bool hideFirst = TagPreview.PreviewFirstTag.Contains(Value);
                 List<TreeNode> Subs = new List<TreeNode>();
                 foreach (StateTag t in Sub)
                 {
                     TreeNode node = t.CreateTreeNode();
-                    if (node is null) continue;
+                    if (node is null || t == Sub[0] && hideFirst) continue;
                     Subs.Add(node);
                 }
                 Node = new TreeNode(nodeValue, Subs.ToArray());
@@ -126,9 +127,8 @@ namespace RainWorldStateEdit
                 Node.Tag = this;
                 return Node;
             }
-
             if (string.IsNullOrEmpty(Value)) return null;
-
+            
             Node = new TreeNode(nodeValue);
             Node.Tag = this;
             return Node;
@@ -137,7 +137,7 @@ namespace RainWorldStateEdit
 
         public bool IsArrayTag()
         {
-            if (Sub != null && !IsValueTag()) return true;
+            if (Sub != null && Sub.Count > 0 && !IsValueTag()) return true;
             return false;
         }
         public bool IsValueTag() 
@@ -150,7 +150,5 @@ namespace RainWorldStateEdit
             if (Sub is null) return true;
             return false;
         }
-
-
     }
 }
