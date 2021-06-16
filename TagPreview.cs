@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace RainWorldStateEdit
@@ -25,10 +26,14 @@ namespace RainWorldStateEdit
             {
                 return $"Creature: {IDToNameMap[id]}";
             }
+            if (tag.Value == "TOTTIME" && tag.IsValueTag()) 
+            {
+                return TimeSpan.FromSeconds(int.Parse(tag[0].Value)).ToString("c");
+            }
             return null;
         }
 
-        internal static string[] PreviewFirstTag = new string[] { "MAP", "SHELTERLIST", "REGIONSTATE", "SAVE STATE" };
+        internal static string[] PreviewFirstTag = new string[] { "MAP", "SHELTERLIST", "REGIONSTATE", "SAVE STATE", "InputSetup", "GAMETYPE", "CONFIG" };
         static Dictionary<int, string> IDToNameMap = new Dictionary<int, string>()
         {
             {0,     "StandardGroundCreature"},

@@ -66,6 +66,7 @@ namespace RainWorldStateEdit
             this.MinimumSize = new System.Drawing.Size(300, 83);
             this.Name = "TagEdit";
             this.Text = "TagEdit";
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TagEdit_KeyDown);
             this.ResumeLayout(false);
             this.PerformLayout();
 

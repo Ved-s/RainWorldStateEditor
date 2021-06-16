@@ -46,6 +46,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommunitiesEdit.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CommunitiesEdit.Designer.cs">
+      <DependentUpon>CommunitiesEdit.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CommunityPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CommunityPanel.Designer.cs">
+      <DependentUpon>CommunityPanel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Main.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -71,6 +83,12 @@
     </Compile>
     <Compile Include="TagMenu.cs" />
     <Compile Include="TagPreview.cs" />
+    <EmbeddedResource Include="CommunitiesEdit.resx">
+      <DependentUpon>CommunitiesEdit.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CommunityPanel.resx">
+      <DependentUpon>CommunityPanel.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
     </EmbeddedResource>

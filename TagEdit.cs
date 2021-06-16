@@ -90,6 +90,11 @@ namespace RainWorldStateEdit
         {
             if (e.KeyCode == Keys.Enter) Ok_Click(sender, null);
         }
+
+        private void TagEdit_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape) Close();
+        }
     }
     public enum TagAction { Rename, Edit }
 }

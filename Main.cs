@@ -14,13 +14,60 @@ namespace RainWorldStateEdit
 {
     public partial class Main : Form
     {
+        static string[] SupportsSpecialEdit = new string[] { "COMMUNITIES" };
         Dictionary<TreeNode, (string, string, bool, bool)> Files = new Dictionary<TreeNode, (string, string, bool, bool)>();
-        TreeNode selectedRootNode = null;
+
+        internal TreeNode selectedRootNode = null;
+        internal TreeNode selectedNode = null;
+        internal StateTag SelectedTag { get => selectedNode.Tag as StateTag; }
+
+        public static Main Instance;
 
         public Main()
         {
             InitializeComponent();
-            
+            Instance = this;
+        }
+
+        private void SelectNode(TreeNode node) 
+        {
+            selectedNode = node;
+            selectedRootNode = node;
+            while (selectedRootNode.Parent != null)
+            {
+                selectedRootNode = selectedRootNode.Parent;
+            }
+
+            EditMenu.Enabled = node.Parent != null;
+
+            (string, string, bool, bool) file = Files[selectedRootNode];
+
+            if (file.Item2 == null)
+            {
+                CheckSum.Text = "No checksum";
+                CheckSum.ForeColor = SystemColors.ControlText;
+                CheckSumFix.Checked = true;
+                CheckSumFix.Enabled = false;
+            }
+            else
+            {
+                Save.Enabled = true;
+                SaveAs.Enabled = true;
+                CheckSumFix.Enabled = true;
+                CheckSumFix.Checked = file.Item4;
+                CheckSum.Text = file.Item3 ? "Checksum correct" : "Checksum is wrong";
+                CheckSum.ForeColor = file.Item3 ? Color.Green : Color.Red;
+            }
+
+            StateTag tag = selectedNode.Tag as StateTag;
+            ValueEditMenu.Enabled = tag.IsValueTag() || TagPreview.PreviewFirstTag.Contains(tag.Value);
+            DelValueEditmenu.Enabled = tag.IsValueTag();
+            SpecialEditMenu.Enabled = SupportsSpecialEdit.Contains(tag.Value);
+        }
+
+        private void Main_Load(object sender, EventArgs e)
+        {
+            TagMenu.Init();
         }
 
         private void Load_Click(object sender, EventArgs e)
@@ -44,52 +91,30 @@ namespace RainWorldStateEdit
                 TagTree.Nodes.Add(tn);
             }
         }
-        private void TagTree_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
-        {
-            
-            selectedRootNode = e.Node;
-            while (selectedRootNode.Parent != null)
-            {
-                selectedRootNode = selectedRootNode.Parent;
-            }
-
-            (string, string, bool, bool) file = Files[selectedRootNode];
-
-            if (file.Item2 == null)
-            {
-                CheckSum.Text = "No checksum";
-                CheckSum.ForeColor = SystemColors.ControlText;
-                CheckSumFix.Checked = true;
-                CheckSumFix.Enabled = false;
-            }
-            else
-            {
-                Save.Enabled = true;
-                CheckSumFix.Enabled = true;
-                CheckSumFix.Checked = file.Item4;
-                CheckSum.Text = file.Item3 ? "Checksum correct" : "Checksum is wrong";
-                CheckSum.ForeColor = file.Item3 ? Color.Green : Color.Red;
-            }
-
-            if (e.Button == MouseButtons.Right) TagMenu.Show(e.Node, e.Location);
-        }
-        private void CheckSumFix_CheckedChanged(object sender, EventArgs e)
-        {
-            (string, string, bool, bool) file = Files[selectedRootNode];
-            Files[selectedRootNode] = (file.Item1, file.Item2, file.Item3, CheckSumFix.Checked);
-        }
         private void Save_Click(object sender, EventArgs e)
+        {
+            (string, string, bool, bool) file = Files[selectedRootNode];
+            string text = (selectedRootNode.Tag as StateTag).ToString();
+            string hash = (file.Item4 && file.Item2 != null) ? RWCustom.Md5Sum(text) : file.Item2;
+
+            bool hashCorrect = (hash is null) ? false : hash == RWCustom.Md5Sum(text);
+            Files[selectedRootNode] = (file.Item1, hash, hashCorrect, CheckSumFix.Checked);
+
+            if (hash != null) text = hash + text;
+            File.WriteAllText(file.Item1, text);
+        }
+        private void SaveAs_Click(object sender, EventArgs e)
         {
             SaveFileDialog sfd = new SaveFileDialog();
             (string, string, bool, bool) file = Files[selectedRootNode];
 
-            sfd.FileName = file.Item1;
+            sfd.FileName = Path.GetFileName(file.Item1);
             if (sfd.ShowDialog() == DialogResult.OK)
             {
                 string text = (selectedRootNode.Tag as StateTag).ToString();
                 string hash = (file.Item4 && file.Item2 != null) ? RWCustom.Md5Sum(text) : file.Item2;
 
-                bool hashCorrect = (hash is null)? false : hash == RWCustom.Md5Sum(text);
+                bool hashCorrect = (hash is null) ? false : hash == RWCustom.Md5Sum(text);
                 Files[selectedRootNode] = (sfd.FileName, hash, hashCorrect, CheckSumFix.Checked);
 
                 if (hash != null) text = hash + text;
@@ -97,9 +122,45 @@ namespace RainWorldStateEdit
             }
         }
 
+        private void CheckSumFix_CheckedChanged(object sender, EventArgs e)
+        {
+            (string, string, bool, bool) file = Files[selectedRootNode];
+            Files[selectedRootNode] = (file.Item1, file.Item2, file.Item3, CheckSumFix.Checked);
+        }
+
+        private void TagTree_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
+        {
+
+            SelectNode(e.Node);
+            if (e.Button == MouseButtons.Right)
+            {
+                TagMenu.Show(e.Location);
+            }
+        }
         private void TagTree_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
         {
             if ((e.Node.Tag as StateTag).IsValueTag()) TagEdit.Instance.Show(e.Node, TagAction.Edit);
+        }
+        private void TagTree_KeyUp(object sender, KeyEventArgs e)
+        {
+            switch (e.KeyCode) 
+            {
+                case Keys.Up:
+                case Keys.Right:
+                case Keys.Down:
+                case Keys.Left:
+                    SelectNode(TagTree.SelectedNode);
+                    break;
+            }
+        }
+        private void TagTree_KeyDown(object sender, KeyEventArgs e)
+        {
+            switch (e.KeyCode)
+            {
+                case Keys.Enter:
+                    if ((TagTree.SelectedNode.Tag as StateTag).IsValueTag()) TagEdit.Instance.Show(TagTree.SelectedNode, TagAction.Edit);
+                    break;
+            }
         }
     }
 }
