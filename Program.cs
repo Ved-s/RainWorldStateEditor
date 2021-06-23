@@ -16,11 +16,17 @@ namespace RainWorldStateEdit
         public static Main Form;
 
         [STAThread]
-        static void Main()
+        static void Main(string[] args)
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+
             Form = new Main();
+
+            if (args.Length == 1) 
+            {
+                RainWorldStateEdit.Main.AutoloadFile = args[0];
+            }
             Application.Run(Form);
         }
 

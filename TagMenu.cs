@@ -59,11 +59,18 @@ namespace RainWorldStateEdit
         }
         private static void DeleteTag(object sender, EventArgs e)
         {
-            if (Main.Instance.selectedNode.Index == 0) { MessageBox.Show("Cannot delete first tag - it might break file structure"); return; }
+            StateTag ptg = Main.Instance.selectedNode.Parent.Tag as StateTag;
+            StateTag tg = Main.Instance.selectedNode.Tag as StateTag;
 
             if (Control.ModifierKeys.HasFlag(Keys.Shift) || MessageBox.Show($"Delete {(Main.Instance.selectedNode.Tag as StateTag).Value}?", "", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
-                (Main.Instance.selectedNode.Parent.Tag as StateTag).Sub.Remove(Main.Instance.selectedNode.Tag as StateTag);
+                if (Main.Instance.selectedNode.Index == 0) 
+                {
+                    if (ptg.Sub.Count == 1) ptg.Sub.Add(new StateTag(tg.Tag, tg.Level, null));
+                    else { ptg[1].Tag = tg.Tag; ptg[1].Level = tg.Level; }
+                }
+
+                ptg.Sub.Remove(tg);
                 Main.Instance.selectedNode.Remove();
                 GC.Collect();
             }

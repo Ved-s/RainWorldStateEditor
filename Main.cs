@@ -21,6 +21,8 @@ namespace RainWorldStateEdit
         internal TreeNode selectedNode = null;
         internal StateTag SelectedTag { get => selectedNode.Tag as StateTag; }
 
+        public static string AutoloadFile = null;
+
         public static Main Instance;
 
         public Main()
@@ -61,36 +63,24 @@ namespace RainWorldStateEdit
 
             StateTag tag = selectedNode.Tag as StateTag;
             ValueEditMenu.Enabled = tag.IsValueTag() || TagPreview.PreviewFirstTag.Contains(tag.Value);
-            DelValueEditmenu.Enabled = tag.IsValueTag();
             SpecialEditMenu.Enabled = SupportsSpecialEdit.Contains(tag.Value);
         }
 
         private void Main_Load(object sender, EventArgs e)
         {
             TagMenu.Init();
+            if (AutoloadFile != null) LoadFile(AutoloadFile);
         }
 
         private void Load_Click(object sender, EventArgs e)
         {
             OpenFileDialog ofd = new OpenFileDialog();
-            if (ofd.ShowDialog() == DialogResult.OK) 
+            if (ofd.ShowDialog() == DialogResult.OK)
             {
-                string file = File.ReadAllText(ofd.FileName);
-                string hash = null;
-                string possibleHash = file.Substring(0, 32);
-                bool hashCorrect = false;
-                if (Regex.IsMatch(possibleHash, "^[0-9a-f]{32}$")) 
-                {
-                    hash = possibleHash;
-                    file = file.Substring(32, file.Length - 32);
-                    hashCorrect = hash == RWCustom.Md5Sum(file);
-                }
-
-                TreeNode tn = new StateParser(file, Path.GetFileName(ofd.FileName)).TagTree.CreateTreeNode();
-                Files.Add(tn, (ofd.FileName, hash, hashCorrect, true));
-                TagTree.Nodes.Add(tn);
+                LoadFile(ofd.FileName);
             }
         }
+
         private void Save_Click(object sender, EventArgs e)
         {
             (string, string, bool, bool) file = Files[selectedRootNode];
@@ -161,6 +151,25 @@ namespace RainWorldStateEdit
                     if ((TagTree.SelectedNode.Tag as StateTag).IsValueTag()) TagEdit.Instance.Show(TagTree.SelectedNode, TagAction.Edit);
                     break;
             }
+        }
+
+        private void LoadFile(string filename)
+        {
+            string file = File.ReadAllText(filename);
+            string hash = null;
+            string possibleHash = file.Substring(0, 32);
+            bool hashCorrect = false;
+            if (Regex.IsMatch(possibleHash, "^[0-9a-f]{32}$"))
+            {
+                hash = possibleHash;
+                file = file.Substring(32, file.Length - 32);
+                hashCorrect = hash == RWCustom.Md5Sum(file);
+            }
+
+            TreeNode tn = new StateParser(file, Path.GetFileName(filename)).TagTree.CreateTreeNode();
+            tn.Expand();
+            Files.Add(tn, (filename, hash, hashCorrect, true));
+            TagTree.Nodes.Add(tn);
         }
     }
 }

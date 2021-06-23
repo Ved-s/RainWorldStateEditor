@@ -135,6 +135,7 @@ namespace RainWorldStateEdit
 
         }
 
+
         public bool IsArrayTag()
         {
             if (Sub != null && Sub.Count > 0 && !IsValueTag()) return true;
